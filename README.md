@@ -26,6 +26,9 @@ This app will allow you to look up recepies and save your favorate ones.
 | DELETE | `/recipe/:id/rant/:rantId` | Delete a rant |
 
 to make this repository work on your machine be sure to run 
-npm init -y 
-npm install express
-npm install dotenv
+* create .env file
+* npm init -y 
+* npm install express
+* npm install dotenv
+* npm i sequelize
+* npm i pg pg-hstore
