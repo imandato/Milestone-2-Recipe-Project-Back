@@ -1,30 +1,31 @@
 const express = require('express')
-const router = express.Router()
-const Recipe = require()
+const recipe = express.Router()
+
 
 //INDEX
-router.get('/', (req,res) => {
-    res.render(
+recipe.get('/', (req,res) => {
+    res.send(
         'Index'
     )
     res.send()
 })
 
 //SHOW
-router.get('/:arrayIndex',(req,res) => {
-    if(Recipe[req.params.arrayIndex]){
-        res.render('Show', {
-            recipe:Recipe[req.params.arrayIndex],
-            index:req.paramas.arrayIndex,
-        })
-    } else {
-        res.render('Error')
-    }
+recipe.get('/:id',(req,res) => {
+    // if(Recipe[req.params.arrayIndex]){
+    //     res.send('Show', {
+    //         recipe:Recipe[req.params.arrayIndex],
+    //         index:req.paramas.arrayIndex,
+    //     })
+    // } else {
+    //     res.send('Error')
+    // }
+    res.send(`recipe index at ${req.params.id}`)
 })
 
 //CREATE
-router.post('/', (req,res) => {
-    res.render(
+recipe.post('/', (req,res) => {
+    res.send(
         'Index'
     )
     Recipe.push(req.body)
@@ -32,15 +33,15 @@ router.post('/', (req,res) => {
 })
 
 //EDIT
-router.get('/edit', (req,res) => {
-    res.render('places/edit')
+recipe.get('/:id', (req,res) => {
+    res.send('places/edit')
 })
 
 //DELETE
-router.delete('/:indexArray', (req, res) => {
-    Recipe.splice(req.params.indexArray, 1)
+recipe.delete('/:id', (req, res) => {
+    recipe.splice(req.params.id, 1)
     res.status(303).redirect('/recipe')
   })
 
 
-module.exports = router
+module.exports = recipe
