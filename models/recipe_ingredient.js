@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model, INTEGER
+  Model 
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Recipe_ingredient extends Model {

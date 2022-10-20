@@ -9,6 +9,8 @@ const { get } = require('./controllers/recipe_controllers');
 //MIDDLEWARE
 
 require('dotenv').config()
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 // SEQUELIZE CONNECTION
 const sequelize = new Sequelize(process.env.PG_URI)

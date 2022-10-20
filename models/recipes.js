@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:"recipe_id",
         as:"steps"
       })
-      Recipes.hasMany(Ingredients,{
-        foreignKey:'recipe_id',
-        as:"recipe",
-        through: Recipe_ingredient
+      // Recipes.hasMany(Ingredients,{
+      //   foreignKey:'recipe_id',
+      //   as:"recipe",
+      //   through: Recipe_ingredient
         
-      })
+      // })
     }
   }
   Recipes.init({
