@@ -9,9 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(Recipe_ingredient) {
-      Ingredients.belongsToMany(Recipe_ingredient,{
-        foreignKey:"ingredient_id"
+    static associate(Recipe_ingredient,Recipe) {
+      Ingredients.belongsToMany(Recipe,{
+        foreignKey:"ingredient_id",
+        as:"ingredients",
+        through:Recipe_ingredient
       })
     }
   }
