@@ -1,5 +1,8 @@
-const express = require('express')
-const recipe = express.Router()
+
+const recipe = require('express').Router()
+const db = require('../models')
+const {Recipe , Ingredients, Steps, Recipe_ingredient} = db
+const{Op} = require('sequelize')
 
 
 //INDEX
