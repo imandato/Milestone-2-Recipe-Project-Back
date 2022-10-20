@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, INTEGER
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Recipe_ingredient extends Model {
@@ -9,15 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
+    static associate({Recipe,Ingredients}) {
+      Recipe_ingredient.hasMany(Recipe,{
+        foreignKey:"recipe_id",
+        as:"recipe"
+      })
+      Recipe_ingredient.hasMany(Ingredients,{
+        foreignKey:"ingredient",
+        as:"ingredients"
+      })
     }
   }
   Recipe_ingredient.init({
-    recipe_id: {
+    recipe_ingredient_id:{
       type:DataTypes.INTEGER,
       primaryKey:true,
       allowNull:false
+    },
+    recipe_id: {
+      type:DataTypes.INTEGER,
     },
     ingredient_id: {
       type: DataTypes.INTEGER,
