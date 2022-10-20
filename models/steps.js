@@ -3,50 +3,45 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Recipes extends Model {
+  class Steps extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Steps,Recipe_ingredient}) {
-      Recipes.hasMany(Steps,{
+    static associate({Recipes}) {
+      Steps.belongsTo(Recipes,{
         foreignKey:"recipe_id",
-        as:"steps"
-      })
-      Recipes.belongsTo(Recipe_ingredient,{
-        foreignKey:'recipe_id',
-        as:"recipe"  
+        as:"recipe"
+        //alies will appear in json response 
       })
     }
   }
-  Recipes.init({
-    recipe_id: {
+  Steps.init({
+    steps_id:{
       type:DataTypes.INTEGER,
       primaryKey:true,
+      allowNull:false,
       autoIncrement:true
     },
-    image:{
+    step_body:{
       type:DataTypes.STRING,
       allowNull:false
     },
-    title:{
-      type:DataTypes.STRING,
+    step_number: {
+      type:DataTypes.INTEGER,
       allowNull:false
     },
-    author:{
-      type:DataTypes.STRING,
-      allowNull:true
-    },
-    description:{
-      type:DataTypes.STRING,
-      allowNull:false
+    recipe_id:{
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      // forgenKey:true
     }
   }, {
     sequelize,
-    modelName: 'Recipes',
-    tableName: "recipes",
+    modelName: 'Steps',
+    tableName:'steps',
     timestamps:false
   });
-  return Recipes;
+  return Steps;
 };
