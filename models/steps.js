@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate({Recipes}) {
       Steps.belongsTo(Recipes,{
         foreignKey:"recipe_id",
-        as:"recipes"
+        as:"recipe"
+        //alies will appear in json response 
       })
     }
   }
