@@ -1,26 +1,37 @@
-const express = require('express')
-const recipe = express.Router()
+
+const recipe = require('express').Router()
+const db = require('../models')
+const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
+const{Op} = require('sequelize')
 
 
 //INDEX
-recipe.get('/', (req,res) => {
-    res.send(
-        'Index'
-    )
-    res.send()
+recipe.get('/', async(req,res) => {
+    try{
+        const foundRecipes = await Recipes.findAll({
+            attributes:["title", "author"]
+        })
+        res.status(200).json({
+            message:"found all recipes",
+            data:foundRecipes
+        })
+    }catch(err){
+        res.status(500).json(err)
+    }
+    
 })
 
 //SHOW
-recipe.get('/:id',(req,res) => {
-    // if(Recipe[req.params.arrayIndex]){
-    //     res.send('Show', {
-    //         recipe:Recipe[req.params.arrayIndex],
-    //         index:req.paramas.arrayIndex,
-    //     })
-    // } else {
-    //     res.send('Error')
-    // }
-    res.send(`recipe index at ${req.params.id}`)
+recipe.get('/:name', async(req,res) => {
+    try {
+        const foundRecipe = await Recipe.findOne({
+            where: { title: req.params.name }
+        })
+        res.status(200).json(foundRecipe)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+   
 })
 
 //CREATE
