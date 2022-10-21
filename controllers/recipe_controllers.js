@@ -1,30 +1,42 @@
-const express = require('express')
-const router = express.Router()
-const Recipe = require()
+
+const recipe = require('express').Router()
+const db = require('../models')
+const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
+const{Op} = require('sequelize')
+
 
 //INDEX
-router.get('/', (req,res) => {
-    res.render(
-        'Index'
-    )
-    res.send()
+recipe.get('/', async(req,res) => {
+    try{
+        const foundRecipes = await Recipes.findAll({
+            attributes:["title", "author"]
+        })
+        res.status(200).json({
+            message:"found all recipes",
+            data:foundRecipes
+        })
+    }catch(err){
+        res.status(500).json(err)
+    }
+    
 })
 
 //SHOW
-router.get('/:arrayIndex',(req,res) => {
-    if(Recipe[req.params.arrayIndex]){
-        res.render('Show', {
-            recipe:Recipe[req.params.arrayIndex],
-            index:req.paramas.arrayIndex,
+recipe.get('/:name', async(req,res) => {
+    try {
+        const foundRecipe = await Recipe.findOne({
+            where: { title: req.params.name }
         })
-    } else {
-        res.render('Error')
+        res.status(200).json(foundRecipe)
+    } catch (error) {
+        res.status(500).json(error)
     }
+   
 })
 
 //CREATE
-router.post('/', (req,res) => {
-    res.render(
+recipe.post('/', (req,res) => {
+    res.send(
         'Index'
     )
     Recipe.push(req.body)
@@ -32,16 +44,16 @@ router.post('/', (req,res) => {
 })
 
 //EDIT
-router.get('/edit', (req,res) => {
-    res.render('places/edit')
+recipe.get('/:id', (req,res) => {
+    res.send('places/edit')
 })
 
 //DELETE
-router.delete('/:indexArray', (req, res) => {
-    Recipe.splice(req.params.indexArray, 1)
+recipe.delete('/:id', (req, res) => {
+    recipe.splice(req.params.id, 1)
     res.status(303).redirect('/recipe')
   })
 
   
 
-module.exports = router
+module.exports = recipe

@@ -9,8 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
+    static associate({Steps,Ingredients,Recipe_ingredient}) {
+      Recipes.hasMany(Steps,{
+        foreignKey:"recipe_id",
+        as:"steps"
+      })
+      // Recipes.hasMany(Ingredients,{
+      //   foreignKey:'recipe_id',
+      //   as:"recipe",
+      //   through: Recipe_ingredient
+        
+      // })
     }
   }
   Recipes.init({
@@ -31,19 +40,15 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.STRING,
       allowNull:true
     },
-    servings: {
-      type:DataTypes.INTEGER, 
+    description:{
+      type:DataTypes.STRING,
       allowNull:false
-    },
-    ingredients: {
-      type:DataTypes.ARRAY(DataTypes.STRING)
-    },
-    instructions: {
-      type:DataTypes.TEXT
     }
   }, {
     sequelize,
     modelName: 'Recipes',
+    tableName: "recipes",
+    timestamps:false
   });
   return Recipes;
 };
