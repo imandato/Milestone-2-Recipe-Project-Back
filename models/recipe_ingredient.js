@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate() {
+    static associate(models) {
      
     }
   }
@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Recipe_ingredient',
-    tableName:'recipe_ingredient'
+    tableName:'recipe_ingredient',
+    timestamps:false
   });
   return Recipe_ingredient;
 };
