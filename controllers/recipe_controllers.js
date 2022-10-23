@@ -8,8 +8,12 @@ const{Op} = require('sequelize')
 //INDEX
 recipe.get('/', async(req,res) => {
     try{
-        const foundRecipes = await Recipes.findAll({
-            attributes:["title", "author"]
+        const foundRecipes = await Recipes.findOne({
+            attributes:["title", "author"],
+            include:{
+                model:Steps,
+                as:"steps"
+            }
         })
         res.status(200).json({
             message:"found all recipes",
