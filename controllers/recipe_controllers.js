@@ -2,8 +2,7 @@
 const recipe = require('express').Router()
 const db = require('../models')
 const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
-const{Op} = require('sequelize')
-
+const { Sequelize } = require('sequelize')
 
 //INDEX
 recipe.get('/', async(req,res) => {
@@ -18,7 +17,6 @@ recipe.get('/', async(req,res) => {
     }catch(err){
         res.status(500).json(err)
     }
-    
 })
 
 //SHOW
