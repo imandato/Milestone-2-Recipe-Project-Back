@@ -68,8 +68,7 @@ recipe.get('/:name', async(req,res) => {
             data:foundRecipe})
     } catch (error) {
         res.status(500).json(error)
-    }
-   
+    }   
 })
 
 //SHOW-find all recipes by step number
