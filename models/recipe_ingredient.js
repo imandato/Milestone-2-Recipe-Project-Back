@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     recipe_id: {
       type:DataTypes.INTEGER,
+      allowNull:false
     },
     ingredient_id: {
       type: DataTypes.INTEGER,
@@ -33,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Recipe_ingredient',
-    tableName:'recipe_ingredient',
+    tableName:'recipe_ingredients',
     timestamps:false
   });
   return Recipe_ingredient;
