@@ -38,7 +38,7 @@ recipe.get('/:name', async(req,res) => {
                 model:Ingredients,
                 as:'ingredients',
                 through:{
-                    attributes:[]
+                    attributes:["quantity"]
                 }
             }]
         })
