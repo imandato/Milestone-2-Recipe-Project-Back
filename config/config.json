@@ -1,21 +1,22 @@
 {
   "development": {
     "username": "postgres",
-    "password": "Neve8068",
+    "password": "280707",
     "database": "recipe_app",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "port": "5434"
   },
   "test": {
     "username": "postgres",
-    "password": "Neve8068",
+    "password": "280707",
     "database": "recipe_app_test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
-    "password": "Neve8068",
+    "password": "280707",
     "database": "recipe_app_production",
     "host": "127.0.0.1",
     "dialect": "postgres"

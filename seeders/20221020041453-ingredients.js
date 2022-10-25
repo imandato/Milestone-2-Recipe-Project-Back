@@ -18,7 +18,15 @@ module.exports = {
     },
     {
       name:"bun"
-    }], {});
+    },
+    {
+      name:"oysters"
+    },
+    {
+      name:"garlic"
+    }
+  ], 
+  {});
     
   },
 
