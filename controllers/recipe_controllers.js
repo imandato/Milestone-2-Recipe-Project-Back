@@ -3,7 +3,7 @@ const recipe = require('express').Router()
 const db = require('../models')
 const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
 const{Op} = require('sequelize')
-const ingredients = require('../models/ingredients')
+
 
 
 //INDEX
