@@ -4,7 +4,6 @@ const app = express();
 const { get } = require('./controllers/recipe_controllers');
 
 //MIDDLEWARE
-
 require('dotenv').config()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))

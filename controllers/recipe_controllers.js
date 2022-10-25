@@ -112,61 +112,6 @@ recipe.delete('/:id', async (req, res) => {
     }
 })
 
-// //SHOW-Find all recipes by title
-// recipe.get('/:title', async(req,res) => {
-//     try {
-//         const foundRecipe = await Recipes.findAll({
-//             where: { title: req.params.title }
-//         })
-//         res.status(200).json({
-//             message:`found all recipes with title: ${req.params.title}`,
-//             data:foundRecipe})
-//     } catch (error) {
-//         res.status(500).json(error)
-//     }
-// })
-
-// //SHOW-Find all recipes by one ingredient's name
-// recipe.get('/:name', async(req,res) => {
-//     try {
-//         const foundRecipe = await Recipes.findAll({
-//             where: { name: req.params.name }
-//         })
-//         res.status(200).json({
-//             message:`found all recipes with ingredient: ${req.params.name}`,
-//             data:foundRecipe})
-//     } catch (error) {
-//         res.status(500).json(error)
-//     }   
-// })
-
-// //SHOW-find all recipes by step number
-// recipe.get('/:step_num', async(req,res) => {
-//     try {
-//         const foundRecipe = await Recipes.findAll({
-//             where: { step_number: req.params.step_num }
-//         })
-//         res.status(200).json({
-//             message:`found all recipes with steps number: ${req.params.step_num}`,
-//             data:foundRecipe})
-//     } catch (error) {
-//         res.status(500).json(error)
-//     }
-// })
-
-// //Filter all recipes without ingredients
-// recipe.get('/:no_name', async(req,res) => {
-//     try {
-//         const foundRecipe = await Recipes.findAll({
-//             where: { [Op.not]:{name:req.params.no_name}
-//         }})
-//         res.status(200).json({
-//             message:`found all recipes without ingredients: ${req.params.no_name}`,
-//             data:foundRecipe})
-//     } catch (error) {
-//         res.status(500).json(error)
-//     }  
-// })
 
 
 module.exports = recipe
