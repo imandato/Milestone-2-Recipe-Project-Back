@@ -3,7 +3,28 @@ const db = require('../models')
 const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
 const {Op} = require('sequelize')
 
-
+//INDEX
+recipe.get('/', async(req,res) => {
+    try{
+        const foundRecipes = await Recipes.findAll({
+            attributes:["title", "author"],
+            where:{
+              title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
+            },
+            include:{
+                model:Steps,
+                as:"steps"
+            }
+        })
+        res.status(200).json({
+            message:"found all recipes",
+            data:foundRecipes
+        })
+    }catch(err){
+        res.status(500).json(err)
+    }
+    
+})
 
 //SHOW Find a specific Recipe 
 recipe.get('/:name', async(req,res) => {
