@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     recipe_ingredient_id:{
       type:DataTypes.INTEGER,
       primaryKey:true,
-      allowNull:false
+      allowNull:false,
+      autoIncrement:true
     },
     recipe_id: {
       type:DataTypes.INTEGER,
