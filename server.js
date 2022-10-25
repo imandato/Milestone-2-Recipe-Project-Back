@@ -3,14 +3,14 @@
 const express = require('express')
 const app = express();
 const { Sequelize } = require('sequelize');
-const { get } = require('./controllers/recipe_controllers');
-
+const cors = require('cors')
 
 //MIDDLEWARE
 
 require('dotenv').config()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cors())
 
 // SEQUELIZE CONNECTION
 const sequelize = new Sequelize(process.env.PG_URI)

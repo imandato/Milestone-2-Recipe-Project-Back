@@ -13,10 +13,6 @@ recipe.get('/', async(req,res) => {
             attributes:["title", "author"],
             where:{
               title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
-            },
-            include:{
-                model:Steps,
-                as:"steps"
             }
         })
         res.status(200).json({
