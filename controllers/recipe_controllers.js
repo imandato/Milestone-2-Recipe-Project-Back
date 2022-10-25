@@ -1,50 +1,12 @@
 const recipe = require('express').Router()
 const db = require('../models')
 const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
-<<<<<<< HEAD
 const {Op} = require('sequelize')
-=======
-const{Op} = require('sequelize')
-const ingredients = require('../models/ingredients')
->>>>>>> 239a4f7e7a5dbfc9444d11265d20be05caa34a19
 
-
-//Index - show 5 recipes in database randomly (100 recipes)
+//INDEX
 recipe.get('/', async(req,res) => {
     try{
         const foundRecipes = await Recipes.findAll({
-<<<<<<< HEAD
-            order: [ [ Sequelize.fn('RANDOM') ] ],
-            limit: 3, 
-            attributes:["title", "author"],
-            where:{
-              title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
-            },
-            include:{
-                model:Steps,
-                as:"steps"
-=======
-            attributes:["title", "author"],
-            where:{
-              title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
->>>>>>> 239a4f7e7a5dbfc9444d11265d20be05caa34a19
-            }
-        })
-        res.status(200).json({
-            message:"found all recipes",
-            data:foundRecipes
-        })
-    }catch(err){
-        res.status(500).json(err)
-    }
-    
-})
-
-<<<<<<< HEAD
-//INDEX
-recipe.get('/1', async(req,res) => {
-    try{
-        const foundRecipes = await Recipes.findAll({
             attributes:["title", "author"],
             where:{
               title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
@@ -64,19 +26,6 @@ recipe.get('/1', async(req,res) => {
     
 })
 
-//SHOW-find all recipes by author
-recipe.get('/:author', async(req,res) => {
-    try{
-        const foundRecipes = await Recipes.findAll({
-            where:{author:req.params.author}}
-        )
-        res.status(200).json({
-            message:`found all recipes with author: ${req.params.author}`,
-            data:foundRecipes
-        })
-    }catch(err){
-        res.status(500).json(err)
-=======
 //SHOW Find a specific Recipe 
 recipe.get('/:name', async(req,res) => {
     try {
@@ -97,7 +46,6 @@ recipe.get('/:name', async(req,res) => {
         res.status(200).json(foundRecipe)
     } catch (error) {
         res.status(500).json(error)
->>>>>>> 239a4f7e7a5dbfc9444d11265d20be05caa34a19
     }
 })
 
