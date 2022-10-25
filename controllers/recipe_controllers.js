@@ -66,9 +66,14 @@ recipe.post('/', async (req, res) => {
             recipe_id: newRecipe.recipe_id
           })   
 
-          const newIngredient = await Ingredients.create({
-                name: req.body.name
-          })
+        
+          const newIngredient = await req.body.name.value.forEach(value =>{
+                      Ingredients.create({
+                          name: value
+                    })
+          }) 
+          
+          
 
           const newRecipe_Ingredient = await Recipe_ingredient.create({
                 recipe_id: newRecipe.recipe_id,
@@ -76,7 +81,7 @@ recipe.post('/', async (req, res) => {
                 quantity:req.body.quantity
           })
             res.status(200).json({
-            message: 'Successfully inserted info in all tables',
+            message: `Successfully inserted info in all tables ${req.body.name.value.length}`,
             data:[newRecipe,newStep,newIngredient,newRecipe_Ingredient]
         })
     } catch(err) {
@@ -119,20 +124,32 @@ recipe.get('/:id', async (req, res) => {
 })
 
 //DELETE
-// recipe.delete('/:id', async (req, res) => {
-//     try {
-//         const deletedRecipe = await recipe.destroy({
-//             where: {
-//                 recipe_id: req.params.id
-//             }
-//         })
-//         res.status(200).json({
-//             message: `Successfully deleted ${deletedRecipe} recipe(s)`
-//         })
-//     } catch(err) {
-//         res.status(500).json(err)
-//     }
-// })
+recipe.delete('/:id', async (req, res) => {
+    try {
+        const deletedRecipe = await recipe.destroy({
+            where: {
+                recipe_id: req.params.id
+            }
+        })
+
+        const deleteSteps = await Steps.destroy({
+            where: {
+                recipe_id: req.params.id
+            }
+        })
+
+        const deleteRecipeIngredient = await Recipe_ingredient.destroy({
+            where: {
+                recipe_id: req.params.id
+            }
+        })
+        res.status(200).json({
+            message: `Successfully deleted ${deletedRecipe} recipe(s)`
+        })
+    } catch(err) {
+        res.status(500).json(err)
+    }
+})
 
 
 
