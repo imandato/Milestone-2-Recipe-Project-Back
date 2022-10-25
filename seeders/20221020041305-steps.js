@@ -12,7 +12,11 @@ module.exports = {
         step_number:2
         ,
         step_body:"rotate the pizza after 3 minutes, take out of the oven when the cheese is melted and the crust is bubbling and brown. let pizza cool and serve",
+<<<<<<< HEAD
         recipe_id: 1 
+=======
+        recipe_id: 1  
+>>>>>>> 239a4f7e7a5dbfc9444d11265d20be05caa34a19
       },
     {
       step_number:1,
@@ -29,6 +33,7 @@ module.exports = {
   {
     step_number:3,
     step_body:"put hot dogs on buns and serve",
+<<<<<<< HEAD
     recipe_id: 2
   },
   {
@@ -42,6 +47,11 @@ module.exports = {
     recipe_id: 3
   }
 ], {});
+=======
+    recipe_id:2
+
+  }], {});
+>>>>>>> 239a4f7e7a5dbfc9444d11265d20be05caa34a19
   },
 
   async down (queryInterface, Sequelize) {
