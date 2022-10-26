@@ -22,8 +22,6 @@ This app will allow you to look up recepies and save your favorate ones.
 | GET | `/recipe/:id/edit` | Edit form for a recipe |
 | PUT | `/recipe/:id` | Make changes to existing recipe |
 | DELETE | `/recipe/:id` | Delete a recipe |
-| POST | `/recipe/:id/rant` | Add rant to a recipe |
-| DELETE | `/recipe/:id/rant/:rantId` | Delete a rant |
 
 to make this repository work on your machine be sure to run 
 * create .env file

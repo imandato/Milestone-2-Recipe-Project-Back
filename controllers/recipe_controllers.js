@@ -9,13 +9,8 @@ const ingredients = require('../models/ingredients')
 recipe.get('/', async(req,res) => {
     try{
         const foundRecipes = await Recipes.findAll({
-            attributes:["title", "author"],
             where:{
               title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
-            },
-            include:{
-                model:Steps,
-                as:"steps"
             }
         })
         res.status(200).json({
@@ -28,19 +23,29 @@ recipe.get('/', async(req,res) => {
     
 })
 
-//SHOW Find a specific Recipe 
+//SHOW Find a specific Recipe returns steps ingredients and quantity in adition to recipe values 
 recipe.get('/:name', async(req,res) => {
     try {
         const foundRecipe = await Recipes.findOne({
-            where: { title: req.params.name},
-            include:[{
+            where: { recipe_id: req.params.name},
+            include:[
+                {
                 model:Ingredients,
                 as:'ingredients',
                 through:{
                     attributes:["quantity"]
-                }
-            }]
+                },
+            }
+        ,
+            {
+                model:Steps,
+                as:"steps"
+            }
+        ]
         })
+        // const ingredientList = await Recipe_ingredient.findAll({
+        //     where:{recipe_id : foundRecipe.recipe_id},
+        //})
         console.log("hi")
         res.status(200).json(foundRecipe)
     } catch (error) {
@@ -48,65 +53,105 @@ recipe.get('/:name', async(req,res) => {
     }
 })
 
-//CREATE
-recipe.post('/', async (req, res) => {
-    try {
+//test create
+recipe.post('/', async (req,res)=>{
+    try{
+        
         const newRecipe = await Recipes.create(
+                        { author: req.body.author,
+                          image: req.body.image,
+                          title: req.body.title,
+                          description: req.body.description
+                        })
+
+         const response = await req.body
+        
+        //creates an array of all our added steps refencing the created recipe id 
+        const stepsArr = await response.step_body.map((value,i) =>{
+         //sets i to be 1 for the first value and then goes up from there   
+            i++
+            return(
+                {
+                    step_body: value,
+                    step_number: i,
+                    recipe_id:newRecipe.recipe_id
+                }
+            )
+        })
+        //bulk creates all the new steps
+        const bulkSteps = await Steps.bulkCreate(stepsArr)
+
+        const ingredientsArr = await response.name.map(value =>{
+            return(
+                {
+                    name:value
+                }
+            )
+        })
+        //adds all ingredient objects to the database
+        const bulkIngredients = await Ingredients.bulkCreate(ingredientsArr)
+
+        const recipeIngredientArr = await response.quantity.map((value,i) =>{
+            return(
+                {
+                  recipe_id:newRecipe.recipe_id,
+                  ingredient_id:bulkIngredients[i].ingredient_id,
+                  quantity:value  
+                }
+            )
+        })
+
+        const bulkRecipeIngredient = await Recipe_ingredient.bulkCreate(recipeIngredientArr)
+  
+        res.status(200).json({
+            message:"that worked",
+            data:[newRecipe,bulkSteps,bulkIngredients,bulkRecipeIngredient]
+        })
+    }catch(err){
+        console.log(err)
+    }
+})
+
+//UPDATE
+recipe.put('/:name/edit', async (req, res) => {
+    try {
+        const updatedRecipe = 
+        await Recipes.update(
             { author: req.body.author,
               image: req.body.image,
               title: req.body.title,
               description: req.body.description
-            })
-        
-        const newStep = await Steps.create({
-            step_body: req.body.step_body,
-            step_number: req.body.step_number,
-            recipe_id: newRecipe.recipe_id
-          })   
-
-        
-          const newIngredient = await req.body.name.value.forEach(value =>{
-                      Ingredients.create({
-                          name: value
-                    })
-          }) 
-          
-          
-
-          const newRecipe_Ingredient = await Recipe_ingredient.create({
-                recipe_id: newRecipe.recipe_id,
-                ingredient_id:newIngredient.ingredient_id,
-                quantity:req.body.quantity
-          })
-            res.status(200).json({
-            message: `Successfully inserted info in all tables ${req.body.name.value.length}`,
-            data:[newRecipe,newStep,newIngredient,newRecipe_Ingredient]
-        })
-    } catch(err) {
-        res.status(500).json(err)
-    }
-})
-
-
-//UPDATE
-recipe.get('/:name/edit', async (req, res) => {
-    try {
-        req.body.recipe_id = 3
-        var tests = ["smash them", "water them", "eat them"]
-        // req.body.author = "YEEEEKAI"
-        // req.body.image = "https://potato.com/"
-        // req.body.title = "Big bowl potato"
-        // req.body.description = "nice bowl of potato"
-
-        const updatedRecipe = 
-        tests.forEach((step,index) =>{
+            }, {
+            where: {
+                recipe_id: req.body.recipe_id
+            }
+        });
+        //updating ingredients
+    await req.body.name.forEach((ingreds) =>{
+        Ingredients.findOrCreate(
+            {where: 
+                {where: {name: ingreds},
+                    }
+            },
+        )     
+        Ingredients.update({ step_body: ingreds}
+            ,{ where: 
+                {recipe_id : req.body.recipe_id}
+            },
+        )
+    })
+          //updating steps
+        await req.body.step_body.forEach((step,index) =>{
             Steps.findOrCreate(
                 {where: 
                     {recipe_id : req.body.recipe_id,
-                        step_number : index + 1,
+                        step_number : index + 1
+                        },
+                defaults:{
+                            step_body:step
                         }
-                }
-            )   
+                },
+            )     
             Steps.update({ step_body: step}
                 ,{ where: 
                     {recipe_id : req.body.recipe_id,
@@ -120,42 +165,17 @@ recipe.get('/:name/edit', async (req, res) => {
                     }
                 }
         )}
-        }
-        )
-        // await Recipes.update(
-        //     { author: req.body.author,
-        //       image: req.body.image,
-        //       title: req.body.title,
-        //       description: req.body.description
-        //     }, {
-        //     where: {
-        //         recipe_id: req.body.recipe_id
-        //     }
-        // });
-        // await Ingredients.findOrCreate(
-        //     { where: {name: req.body.name}
-        //       }
-        //   );
-//Update, need front-end function to put empty value for remove a pre-existing step.
-        // await Steps.transaction(
-
-
-        //     )  
-// find or create step that is never entered.
-        // await Steps.findOrCreate(
-        //     { where: {step_number: req.body.step_number, step_body:req.body.step_body
-        //       }
-        //     });
-        // await Recipe_ingredient.update(
-        //     { author: req.body.author,
-        //         image: req.body.image,
-        //         title: req.body.title,
-        //         description: req.body.description
-        //       }, {
-        //       where: {
-        //           recipe_id: req.recipe_id
-        //       }
-        //   });
+        })
+        //update quatity
+        await Recipes.update(
+            { quantity: req.body.quantity
+            }, {
+            where: {
+                recipe_id: req.body.recipe_id,
+                ingredient_id: req.body.ingredient_id
+            }
+        });
+        
         res.status(200).json({
             message: `Successfully updated ${updatedRecipe} recipe(s)`
         })
@@ -195,3 +215,4 @@ recipe.delete('/:id', async (req, res) => {
 
 
 module.exports = recipe
+

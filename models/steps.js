@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     step_body:{
       type:DataTypes.STRING,
-      allowNull:true
+      allowNull:false
     },
     step_number: {
       type:DataTypes.INTEGER,
