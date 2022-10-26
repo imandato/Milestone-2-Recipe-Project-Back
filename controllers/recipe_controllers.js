@@ -167,7 +167,7 @@ recipe.put('/:name/edit', async (req, res) => {
         )}
         })
         //update quatity
-        await Recipes.update(
+        await Recipe_ingredient.update(
             { quantity: req.body.quantity
             }, {
             where: {
@@ -175,7 +175,7 @@ recipe.put('/:name/edit', async (req, res) => {
                 ingredient_id: req.body.ingredient_id
             }
         });
-        
+
         res.status(200).json({
             message: `Successfully updated ${updatedRecipe} recipe(s)`
         })
