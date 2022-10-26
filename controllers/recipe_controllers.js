@@ -115,8 +115,8 @@ recipe.post('/', async (req,res)=>{
 //UPDATE
 recipe.put('/:name/edit', async (req, res) => {
     try {
-        const updatedRecipe = 
-        await Recipes.update(
+        
+        const updating = await Recipes.update(
             { author: req.body.author,
               image: req.body.image,
               title: req.body.title,
@@ -125,22 +125,20 @@ recipe.put('/:name/edit', async (req, res) => {
             where: {
                 recipe_id: req.body.recipe_id
             }
-        });
-        //updating ingredients
-    await req.body.name.forEach((ingreds) =>{
-        Ingredients.findOrCreate(
-            {where: 
-                {where: {name: ingreds},
+        })
+    //     updating ingredients
+    await Ingredients.findOrCreate(
+            {where:  {name: req.body.name}
                     }
-            },
-        )     
-        Ingredients.update({ step_body: ingreds}
-            ,{ where: 
-                {recipe_id : req.body.recipe_id}
-            },
-        )
-    })
-          //updating steps
+        )    
+    //       updating steps
+    // await Steps.update({step_body: req.body.step_body_1
+    // },  {
+    //     where:  { step_number: 1,
+    //         recipe_id: req.body.recipe_id
+    //     }
+    //             }
+    // )               
         await req.body.step_body.forEach((step,index) =>{
             Steps.findOrCreate(
                 {where: 
@@ -158,15 +156,15 @@ recipe.put('/:name/edit', async (req, res) => {
                     step_number : index + 1}
                 },
             )
-            if (step==="") {Steps.destroy({
-                where: {
-                    recipe_id: req.body.recipe_id,
-                    step_number: index + 1 
-                    }
-                }
-        )}
         })
-        //update quatity
+        //destroy current steps above length of entry
+        await Steps.destroy(
+                    {
+                        where:{ recipe_id: req.body.recipe_id,
+                            step_number: {[Op.gt]:req.body.step_body.length}
+                    }
+                })
+        // update quatity
         await Recipe_ingredient.update(
             { quantity: req.body.quantity
             }, {
@@ -177,7 +175,7 @@ recipe.put('/:name/edit', async (req, res) => {
         });
 
         res.status(200).json({
-            message: `Successfully updated ${updatedRecipe} recipe(s)`
+            message: `Successfully updated ${req.body.title} recipe(s)`
         })
     } catch(err) {
         res.status(500).json(err)
@@ -211,7 +209,6 @@ recipe.delete('/:id', async (req, res) => {
         res.status(500).json(err)
     }
 })
-
 
 
 module.exports = recipe
