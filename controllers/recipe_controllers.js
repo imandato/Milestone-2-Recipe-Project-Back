@@ -8,13 +8,8 @@ const {Op} = require('sequelize')
 recipe.get('/', async(req,res) => {
     try{
         const foundRecipes = await Recipes.findAll({
-            attributes:["title", "author"],
             where:{
               title:{[Op.like]:`%${req.query.title ? req.query.title : ''}%`}
-            },
-            include:{
-                model:Steps,
-                as:"steps"
             }
         })
         res.status(200).json({
@@ -27,18 +22,25 @@ recipe.get('/', async(req,res) => {
     
 })
 
-//SHOW Find a specific Recipe 
+//SHOW Find a specific Recipe returns steps ingredients and quantity in adition to recipe values 
 recipe.get('/:name', async(req,res) => {
     try {
         const foundRecipe = await Recipes.findOne({
             where: { title: req.params.name},
-            include:[{
+            include:[
+                {
                 model:Ingredients,
                 as:'ingredients',
                 through:{
                     attributes:["quantity"]
-                }
-            }]
+                },
+            }
+        ,
+            {
+                model:Steps,
+                as:"steps"
+            }
+        ]
         })
         // const ingredientList = await Recipe_ingredient.findAll({
         //     where:{recipe_id : foundRecipe.recipe_id},
@@ -67,11 +69,9 @@ recipe.post('/', async (req, res) => {
           })   
 
         
-          const newIngredient = await req.body.name.value.forEach(value =>{
-                      Ingredients.create({
-                          name: value
-                    })
-          }) 
+          const newIngredient = await Ingredients.create({
+                name:req.params.name
+          })
           
           
 
@@ -154,3 +154,4 @@ recipe.delete('/:id', async (req, res) => {
 
 
 module.exports = recipe
+
