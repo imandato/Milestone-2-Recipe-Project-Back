@@ -26,7 +26,7 @@ recipe.get('/', async(req,res) => {
 recipe.get('/:name', async(req,res) => {
     try {
         const foundRecipe = await Recipes.findOne({
-            where: { title: req.params.name},
+            where: { recipe_id: req.params.name},
             include:[
                 {
                 model:Ingredients,
@@ -51,82 +51,61 @@ recipe.get('/:name', async(req,res) => {
 //test create
 recipe.post('/', async (req,res)=>{
     try{
-        const ingredientIdArr = []
-        // const newRecipe = await Recipes.create(
-        //                 { author: req.body.author,
-        //                   image: req.body.image,
-        //                   title: req.body.title,
-        //                   description: req.body.description
-        //                 })
+        
+        const newRecipe = await Recipes.create(
+                        { author: req.body.author,
+                          image: req.body.image,
+                          title: req.body.title,
+                          description: req.body.description
+                        })
 
-        const response = await req.body
+         const response = await req.body
+        
+        //creates an array of all our added steps refencing the created recipe id 
+        const stepsArr = await response.step_body.map((value,i) =>{
+         //sets i to be 1 for the first value and then goes up from there   
+            i++
+            return(
+                {
+                    step_body: value,
+                    step_number: i,
+                    recipe_id:newRecipe.recipe_id
+                }
+            )
+        })
+        //bulk creates all the new steps
+        const bulkSteps = await Steps.bulkCreate(stepsArr)
 
-        let thisIngredient ={}
-       const someIngredients = await response.name.map(value => {
-             return(
-                thisIngredient = Ingredients.create({
+        const ingredientsArr = await response.name.map(value =>{
+            return(
+                {
                     name:value
-                }),
-                ingredientIdArr.push(thisIngredient.ingredient_id)
-             )
-       })
-        // const someSteps = await response.step_body.map((value,i) =>{
-        //  //sets i to be 1 for the first value and then goes up from their   
-        //     i++
-        //     return(
-        //         Steps.create({
-        //             step_body: value,
-        //             step_number: i,
-        //             recipe_id:newRecipe.recipe_id
-        //         })
-        //     )
-        // })
+                }
+            )
+        })
+        //adds all ingredient objects to the database
+        const bulkIngredients = await Ingredients.bulkCreate(ingredientsArr)
+
+        const recipeIngredientArr = await response.quantity.map((value,i) =>{
+            return(
+                {
+                  recipe_id:newRecipe.recipe_id,
+                  ingredient_id:bulkIngredients[i].ingredient_id,
+                  quantity:value  
+                }
+            )
+        })
+
+        const bulkRecipeIngredient = await Recipe_ingredient.bulkCreate(recipeIngredientArr)
+  
         res.status(200).json({
             message:"that worked",
-            data:thisIngredient
+            data:[newRecipe,bulkSteps,bulkIngredients,bulkRecipeIngredient]
         })
     }catch(err){
         console.log(err)
     }
 })
-
-// //CREATE
-// recipe.post('/', async (req, res) => {
-//     try {
-//         const newRecipe = await Recipes.create(
-//             { author: req.body.author,
-//               image: req.body.image,
-//               title: req.body.title,
-//               description: req.body.description
-//             })
-        
-//         const newStep = await Steps.create({
-//             step_body: req.body.step_body,
-//             step_number: req.body.step_number,
-//             recipe_id: newRecipe.recipe_id
-//           })   
-
-        
-//           const newIngredient = await Ingredients.create({
-//                 name:req.params.name
-//           })
-          
-          
-
-//           const newRecipe_Ingredient = await Recipe_ingredient.create({
-//                 recipe_id: newRecipe.recipe_id,
-//                 ingredient_id:newIngredient.ingredient_id,
-//                 quantity:req.body.quantity
-//           })
-//             res.status(200).json({
-//             message: `Successfully inserted info in all tables ${req.body.name.value.length}`,
-//             data:[newRecipe,newStep,newIngredient,newRecipe_Ingredient]
-//         })
-//     } catch(err) {
-//         res.status(500).json(err)
-//     }
-// })
-
 
 //UPDATE
 recipe.get('/:id', async (req, res) => {
