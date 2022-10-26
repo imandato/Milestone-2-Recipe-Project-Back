@@ -15,10 +15,11 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "postgres",
-    "password": "Neve8068",
-    "database": "recipe_app_production",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "username": "muvpzvskeofmcp",
+    "password": "4b7761b47b6fbcc733e134d6a2aa986e16df5bb41ed2970c863c378a711cb470",
+    "database": "depflrf0acpnva",
+    "host": "ec2-23-20-140-229.compute-1.amazonaws.com",
+    "dialect": "postgres",
+    "port": "5432"
   }
 }
