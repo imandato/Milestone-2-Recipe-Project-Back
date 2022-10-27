@@ -1,6 +1,6 @@
 # Project Recipe-app
 
-This app will allow you to look up recepies and save your favorate ones.
+This app will allow you to look up recipes and add your own.
 
 ## Tech Usage
 
