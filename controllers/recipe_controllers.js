@@ -3,6 +3,7 @@ const db = require('../models')
 const {Recipes , Ingredients, Steps, Recipe_ingredient} = db
 const {Op} = require('sequelize')
 
+const ingredients = require('../models/ingredients')
 
 //INDEX
 recipe.get('/', async(req,res) => {
@@ -42,6 +43,10 @@ recipe.get('/:name', async(req,res) => {
             }
         ]
         })
+        // const ingredientList = await Recipe_ingredient.findAll({
+        //     where:{recipe_id : foundRecipe.recipe_id},
+        //})
+        console.log("hi")
         res.status(200).json(foundRecipe)
     } catch (error) {
         res.status(500).json(error)
@@ -108,32 +113,69 @@ recipe.post('/', async (req,res)=>{
 })
 
 //UPDATE
-recipe.get('/:id', async (req, res) => {
+recipe.put('/:name/edit', async (req, res) => {
     try {
-        req.body.name = "mashed potato"
-        req.body.author = "YEEEEKAI"
-        req.body.image = "https://potato.com/"
-        req.body.title = "Big bowl potato"
-        req.body.description = "nice bowl of potato"
-        const updatedRecipe = await Recipes.update(
+        
+        const updating = await Recipes.update(
             { author: req.body.author,
               image: req.body.image,
               title: req.body.title,
               description: req.body.description
             }, {
             where: {
-                recipe_id: req.params.id
-            }
-        });
-        await Ingredients.update(
-            { name: req.body.name,
-            }, {
-            where: {
-                ingredient_id: 14
+                recipe_id: req.body.recipe_id
             }
         })
+    //     updating ingredients
+    await Ingredients.findOrCreate(
+            {where:  {name: req.body.name}
+                    }
+        )    
+    //       updating steps
+    // await Steps.update({step_body: req.body.step_body_1
+    // },  {
+    //     where:  { step_number: 1,
+    //         recipe_id: req.body.recipe_id
+    //     }
+    //             }
+    // )               
+        await req.body.step_body.forEach((step,index) =>{
+            Steps.findOrCreate(
+                {where: 
+                    {recipe_id : req.body.recipe_id,
+                        step_number : index + 1
+                        },
+                defaults:{
+                            step_body:step
+                        }
+                },
+            )     
+            Steps.update({ step_body: step}
+                ,{ where: 
+                    {recipe_id : req.body.recipe_id,
+                    step_number : index + 1}
+                },
+            )
+        })
+        //destroy current steps above length of entry
+        await Steps.destroy(
+                    {
+                        where:{ recipe_id: req.body.recipe_id,
+                            step_number: {[Op.gt]:req.body.step_body.length}
+                    }
+                })
+        // update quatity
+        await Recipe_ingredient.update(
+            { quantity: req.body.quantity
+            }, {
+            where: {
+                recipe_id: req.body.recipe_id,
+                ingredient_id: req.body.ingredient_id
+            }
+        });
+
         res.status(200).json({
-            message: `Successfully updated ${updatedRecipe} recipe(s)`
+            message: `Successfully updated ${req.body.title} recipe(s)`
         })
     } catch(err) {
         res.status(500).json(err)
@@ -143,7 +185,7 @@ recipe.get('/:id', async (req, res) => {
 //DELETE
 recipe.delete('/:id', async (req, res) => {
     try {
-        const deletedRecipe = await recipe.destroy({
+        const deletedRecipe = await Recipes.destroy({
             where: {
                 recipe_id: req.params.id
             }
@@ -167,7 +209,6 @@ recipe.delete('/:id', async (req, res) => {
         res.status(500).json(err)
     }
 })
-
 
 
 module.exports = recipe
