@@ -30,3 +30,8 @@ to make this repository work on your machine be sure to run
 * npm install dotenv
 * npm i sequelize
 * npm i pg pg-hstore
+
+## Notes
+Possible future ideas:
+* creating users to save recipes 
+* being able to search for recipe by ingredient
